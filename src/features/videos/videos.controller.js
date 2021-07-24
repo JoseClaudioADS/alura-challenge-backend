@@ -1,3 +1,4 @@
+const yup = require('yup');
 const Video = require('../../infra/database/models/video.model');
 const { createVideoSchema, updateVideoSchema } = require('./videos.validator');
 
@@ -5,48 +6,49 @@ class VideosController {
     async getAll(req, res) {
         const videos = await Video.findAll({ raw: true });
         console.log(videos);
-        res.json(videos);
+        res.send(videos);
     }
 
     async create(req, res) {
         const { body } = req;
-        createVideoSchema
-            .validate(body, { abortEarly: false })
-            .then(async () => {
-                const videoCreated = await Video.create(body);
-                res.status(201).json(videoCreated);
-            })
-            .catch((validationErrors) => {
-                res.status(400).json(validationErrors.errors);
-            });
+        try {
+            await createVideoSchema.validate(body, { abortEarly: false });
+            const videoCreated = await Video.create(body);
+            res.status(201).send(videoCreated);
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                res.status(400).send(err.errors);
+            } else res.send(500);
+        }
     }
 
     async detail(req, res) {
         const { params } = req;
         const video = await Video.findByPk(params.id);
         if (video) {
-            res.json(video);
+            res.send(video);
         } else {
-            res.sendStatus(404);
+            res.status(404).send();
         }
     }
 
     async update(req, res) {
         const { params } = req;
         const video = await Video.findByPk(params.id);
+        
         if (video) {
-            const { body } = req;
-            updateVideoSchema
-                .validate(body, { abortEarly: false })
-                .then(async () => {
-                    const videoCreated = await video.update(body);
-                    res.status(200).json(videoCreated);
-                })
-                .catch((validationErrors) => {
-                    res.status(400).json(validationErrors.errors);
-                });
+            try {
+                const { body } = req;
+                await updateVideoSchema.validate(body, { abortEarly: false });
+                const videoCreated = await video.update(body);
+                res.status(200).send(videoCreated);
+            } catch (err) {
+                if (err instanceof yup.ValidationError) {
+                    res.status(400).send(err.errors);
+                } else res.send(500);
+            }
         } else {
-            res.sendStatus(404);
+            res.status(404).send();
         }
     }
 }

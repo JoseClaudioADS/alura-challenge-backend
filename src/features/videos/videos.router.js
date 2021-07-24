@@ -1,12 +1,15 @@
-const { Router } = require('express');
 const VideosController = require('./videos.controller');
 
-const videosRouter = Router();
-const videosController = new VideosController();
+const videosRouter = function (fastify, opts, done) {
 
-videosRouter.get('', videosController.getAll);
-videosRouter.get('/:id', videosController.detail);
-videosRouter.post('', videosController.create);
-videosRouter.put('/:id', videosController.update);
+    const videosController = new VideosController();
+
+    fastify.get('', videosController.getAll);
+    fastify.get('/:id', videosController.detail);
+    fastify.post('', videosController.create);
+    fastify.put('/:id', videosController.update);
+
+    done()
+};
 
 module.exports = videosRouter;
