@@ -1,7 +1,7 @@
 const videosRouter = require('./features/videos/videos.router');
 
 function registerRoutes(app) {
-    app.use('/videos', videosRouter);
+    app.register(videosRouter, { prefix: '/videos' });
 }
 
 module.exports = {

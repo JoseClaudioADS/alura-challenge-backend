@@ -1,8 +1,5 @@
-const express = require('express');
+const app = require('fastify')({ logger: false })
 const { registerRoutes } = require('./router');
-
-const app = express();
-app.use(express.json());
 
 registerRoutes(app);
 

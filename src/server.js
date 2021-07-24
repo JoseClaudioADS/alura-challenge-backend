@@ -6,9 +6,15 @@ const SERVER_PORT = 3000;
 sequelize
     .sync({ force: true })
     .then(() => {
-        app.listen(SERVER_PORT, () => {
-            console.log(`Server started at por ${SERVER_PORT}`);
-        });
+        const start = async () => {
+            try {
+              await app.listen(SERVER_PORT)
+            } catch (err) {
+              app.log.error(err)
+              process.exit(1) 
+            }
+          }
+          start()  
     })
     .catch(() => {
         console.log('Database connection error');
