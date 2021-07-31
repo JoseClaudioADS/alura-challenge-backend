@@ -3,9 +3,8 @@ const Video = require('../../infra/database/models/video.model');
 const { createVideoSchema, updateVideoSchema } = require('./videos.validator');
 
 class VideosController {
-    async getAll(req, res) {
+    async getAll(_, res) {
         const videos = await Video.findAll({ raw: true });
-        console.log(videos);
         res.send(videos);
     }
 
@@ -35,7 +34,7 @@ class VideosController {
     async update(req, res) {
         const { params } = req;
         const video = await Video.findByPk(params.id);
-        
+
         if (video) {
             try {
                 const { body } = req;

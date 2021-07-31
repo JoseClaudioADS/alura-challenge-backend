@@ -4,7 +4,6 @@ const sequelize = require('../../src/infra/database');
 const Video = require('../../src/infra/database/models/video.model');
 
 describe('Videos Controller', () => {
-
     let server;
 
     beforeAll(async () => {
@@ -19,7 +18,7 @@ describe('Videos Controller', () => {
 
     afterAll(async () => {
         app.close();
-    })
+    });
 
     describe('GetAll', () => {
         it('should get all videos', async () => {
